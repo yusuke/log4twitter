@@ -1,0 +1,17 @@
+<configuration>
+  <appender name="twitter"
+    class="log4twitter.logback.TwitterAppender">
+    <id>YOUR_ID_HERE</id>
+    <password>YOUR_PASSWORD_HERE</password>
+    <async>true</async>
+    <include>.*</include>
+    <exclude></exclude>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%msg%n</pattern>
+    </layout>
+  </appender>
+  <root>
+    <level value="debug" />
+    <appender-ref ref="twitter" />
+  </root>
+</configuration>

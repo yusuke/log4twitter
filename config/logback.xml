@@ -1,0 +1,16 @@
+<configuration>
+  <appender name="twitter"
+    class="log4twitter.logback.TwitterAppender">
+    <id>twit4j</id>
+    <password>twitter4j</password>
+    <async>false</async>
+    <include>.*</include>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%msg%n</pattern>
+    </layout>
+  </appender>
+  <root>
+    <level value="debug" />
+    <appender-ref ref="twitter" />
+  </root>
+</configuration>
