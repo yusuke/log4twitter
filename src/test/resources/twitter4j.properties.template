@@ -1,0 +1,4 @@
+log4twitter.oauth.accessToken=
+log4twitter.oauth.accessTokenSecret=
+log4twitter.oauth.consumerKey=
+log4twitter.oauth.consumerSecret=

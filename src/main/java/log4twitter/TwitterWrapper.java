@@ -15,116 +15,87 @@
  */
 package log4twitter;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
 import java.util.regex.Pattern;
 
-import twitter4j.AsyncTwitter;
-import twitter4j.TwitterException;
-
 /**
- * <p>Title: Log4twitter</p>
- *
- * <p>Description: </p>
- *
- * <p>Copyright: Copyright (c) 2007 Yusuke Yamamoto</p>
- *
- * <p> </p>
- *
- * @author Yusuke Yamamoto
- * @version 1.0.0
+ * @author Yusuke Yamamoto - yusuke at mac.com
+ * @version 1.0.2
+ * @since Log4Twitter 1.0.0
  */
-public class TwitterWrapper {
+final public class TwitterWrapper {
+    static{
+        System.setProperty("twitter4j.loggerFactory", "twitter4j.internal.logging.NullLoggerFactory");
+        
+    }
     public TwitterWrapper() {
         super();
+        initTwitter();
     }
 
-    private String id = null;
-    private String password = null;
     private Pattern include = null;
     private Pattern exclude = null;
     private boolean async = true;
-    private int retryCount = 0;
-    private int retryIntervalSecs = 10;
-    private AsyncTwitter twitter = null;
+    private Twitter twitter = null;
+    private AsyncTwitter asyncTwitter = null;
 
     private String[] subscribers = null;
 
     public void sendMessage(String msg) {
         msg = msg.trim();
         //apply include filter
-        if (null == include || include.matcher(msg).matches()) {
+        if (include == null || include.matcher(msg).matches()) {
             //apply exclude filter
-            if (null == exclude || !exclude.matcher(msg).matches()) {
+            if (exclude == null || !exclude.matcher(msg).matches()) {
                 send(msg);
             }
         }
     }
+
     private void send(String msg) {
-        if (null == twitter) {
-            System.out.print("Warning: Twitter id/password combination is not properly set." + msg);
-        } else {
-            try {
-                if (async) {
-                    twitter.updateAsync(msg);
-                } else {
-                    twitter.update(msg);
-                }
-            } catch (TwitterException ignore) {
+        try {
+            if (async) {
+                asyncTwitter.updateStatus(msg);
+            } else {
+                twitter.updateStatus(msg);
             }
-            // send direct messages
-            if (null != subscribers) {
-                for (int i = 0; i < subscribers.length; i++) {
-                    try {
-                        if (async) {
-                            twitter.sendDirectMessageAsync(subscribers[i], msg);
-                        } else {
-                            twitter.sendDirectMessage(subscribers[i], msg);
-                        }
-                    } catch (TwitterException ignore) {
+        } catch (TwitterException te) {
+            te.printStackTrace();
+        }
+        // send direct messages
+        if (null != subscribers) {
+            for (int i = 0; i < subscribers.length; i++) {
+                try {
+                    if (async) {
+                        asyncTwitter.sendDirectMessage(subscribers[i], msg);
+                    } else {
+                        twitter.sendDirectMessage(subscribers[i], msg);
                     }
+                } catch (TwitterException te) {
+                    te.printStackTrace();
                 }
             }
         }
     }
 
-    public void setId(String id) {
-        this.id = id;
-        initTwiter();
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-        initTwiter();
-    }
-
-    private void initTwiter() {
-        if (null != id && null != password) {
-            twitter = new AsyncTwitter(id, password);
-            twitter.setRetryCount(retryCount);
-            twitter.setRetryIntervalSecs(retryIntervalSecs);
+    private void initTwitter() {
+        twitter = null;
+        asyncTwitter = null;
+        if (this.async) {
+            asyncTwitter = new AsyncTwitterFactory("/log4twitter").getInstance();
+        } else {
+            twitter = new TwitterFactory("/log4twitter").getInstance();
         }
-    }
-
-    public void setRetryCount(int retryCount) {
-        if (retryCount > 0) {
-            this.retryCount = retryCount;
-        }
-        if (null != twitter) {
-            twitter.setRetryIntervalSecs(this.retryCount);
-        }
-    }
-
-    public void setRetryIntervalSecs(int retryIntervalSecs) {
-        if (retryIntervalSecs > 0) {
-            this.retryIntervalSecs = retryIntervalSecs;
-        }
-        if (null != twitter) {
-            twitter.setRetryIntervalSecs(this.retryIntervalSecs);
-        }
-
     }
 
     public void setAsync(String async) {
         this.async = "true".equalsIgnoreCase(async) || "yes".equalsIgnoreCase(async);
+        initTwitter();
     }
 
     public void setInclude(String include) {
@@ -138,6 +109,4 @@ public class TwitterWrapper {
     public void setSubscribers(String subscribers) {
         this.subscribers = subscribers.split(",");
     }
-
-
 }

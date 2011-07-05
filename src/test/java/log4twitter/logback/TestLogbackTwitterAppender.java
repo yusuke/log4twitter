@@ -18,6 +18,11 @@ package log4twitter.logback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import junit.framework.TestCase;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+
+import java.util.Date;
 
 /**
  */
@@ -35,13 +40,14 @@ public class TestLogbackTwitterAppender extends TestCase {
         super.tearDown();
     }
 
-    final static Logger logger = LoggerFactory.getLogger(TestLogbackTwitterAppender.class);
     public void testCloseWriter()throws Exception {
-        logger.info("Entering application.");
+        Logger logger = LoggerFactory.getLogger(TestLogbackTwitterAppender.class);
+        String str = "debug:"+new Date();
+        logger.debug(str);
 
-
-        logger.info("Exiting application.");
-        Thread.sleep(10000);
+        Twitter twitter = new TwitterFactory("/log4twitter").getInstance();
+        Status status = twitter.getUserTimeline("twit4j").get(0);
+        assertTrue(status.getText().contains(str));
     }
 
 }

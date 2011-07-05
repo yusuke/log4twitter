@@ -17,6 +17,11 @@ package log4twitter.log4j;
 
 import org.apache.log4j.Logger;
 import junit.framework.TestCase;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+
+import java.util.Date;
 
 /**
  */
@@ -36,7 +41,12 @@ public class TestLog4jTwitterAppender extends TestCase {
 
     public void testLog4J() throws Exception{
         Logger logger = Logger.getLogger(TestLog4jTwitterAppender.class);
-        logger.debug("debug");
+        String str = "debug:"+new Date();
+        logger.debug(str);
+
+        Twitter twitter = new TwitterFactory("/log4twitter").getInstance();
+        Status status = twitter.getUserTimeline("twit4j").get(0);
+        assertTrue(status.getText().contains(str));
     }
 
 }

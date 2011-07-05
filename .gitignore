@@ -7,3 +7,4 @@ target/*
 *.iml
 *.ipr
 *.iws
+src/test/resources/twitter4j.properties
