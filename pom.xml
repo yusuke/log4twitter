@@ -9,15 +9,15 @@
   <url>http://yusuke.homeip.net/log4twitter/</url>
   <dependencies>
     <dependency>
-      <groupId>twitter4j</groupId>
-      <artifactId>twitter4j</artifactId>
-      <version>1.0.1</version>
+      <groupId>org.twitter4j</groupId>
+      <artifactId>twitter4j-core</artifactId>
+      <version>2.2.3</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>3.8.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -27,21 +27,15 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.2</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>0.9.7</version>
+      <version>0.9.9</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.14</version>
+      <version>1.2.16</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
